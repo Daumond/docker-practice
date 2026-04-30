@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres-demo:
     image: postgres:17-alpine
-    container_name: postgres17
+    container_name: postgres17-demo-data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pass
@@ -11,9 +11,23 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_demo_data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d
     restart: unless-stopped
 
+  postgres-mart:
+    image: postgres:17-alpine
+    container_name: postgres17-mart
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mart
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_mart_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
 volumes:
-  postgres_data:
+  postgres_demo_data:
+  postgres_mart_data:
