@@ -27,6 +27,8 @@ services:
     volumes:
       - postgres_mart_data:/var/lib/postgresql/data
     restart: unless-stopped
+    depends_on:
+      - postgres-demo
 
 volumes:
   postgres_demo_data:
