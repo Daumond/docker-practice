@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:99d75524eaccb8669cda93ea260e7dd3cf79e87921ef2106f963340bb4c569d7
-size 415
+-- Витрина: агрегат по самолётам (фильтр: не отменённые рейсы)
+\connect demo
+
+SET search_path TO public, bookings;
+
+DROP TABLE IF EXISTS public.airplanes_marts;
+
+CREATE TABLE public.airplanes_marts AS
+SELECT
+  r.airplane_code,
+  a.model,
+  a.range,
+  a.speed,
+  COUNT(f.flight_id) AS flights_count
+FROM flights f
+JOIN routes r
+  ON r.route_no = f.route_no
+  AND r.validity @> f.scheduled_departure
+JOIN airplanes a ON a.airplane_code = r.airplane_code
+WHERE f.status <> 'Cancelled'
+GROUP BY r.airplane_code, a.model, a.range, a.speed;
+
+COMMENT ON TABLE public.airplanes_marts IS
+  'Витрина pet-проекта: модель самолёта и число рейсов (без Cancelled)';
